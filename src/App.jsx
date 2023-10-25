@@ -4,22 +4,23 @@ import { MoviesList } from './components/MoviesList';
 import moviesFromServer from './api/movies.json';
 
 function getPreparedMovies(movies, { query }) {
-  let preparedMovies = [...movies];
+  const preparedMovies = [...movies];
 
-  if (query) {
-    preparedMovies = preparedMovies
-      .filter(movie => movie.title.toLowerCase()
-        .includes(query.toLowerCase().trim())
-        || movie.description.toLowerCase()
-          .includes(query.toLowerCase().trim()));
+  if (!query) {
+    return movies;
   }
 
-  return preparedMovies;
+  return preparedMovies
+    .filter(movie => movie.title.toLowerCase()
+      .includes(query.toLowerCase().trim())
+      || movie.description.toLowerCase()
+        .includes(query.toLowerCase().trim()));
 }
 
 export const App = () => {
   const [query, setQuery] = useState('');
   const visibleMovies = getPreparedMovies(moviesFromServer, { query });
+  const onChange = ({ target }) => setQuery(target.value);
 
   return (
     <div className="page">
@@ -33,9 +34,7 @@ export const App = () => {
 
             <div className="control">
               <input
-                onChange={(event) => {
-                  setQuery(event.target.value);
-                }}
+                onChange={onChange}
                 type="text"
                 id="search-query"
                 className="input"
